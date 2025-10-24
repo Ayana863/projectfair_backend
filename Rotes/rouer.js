@@ -35,5 +35,5 @@ router.put('/edit-project/:pId',jwtMiddileware,multerMiddileware.single('project
 
 // to deltet project to only authorized person so add jwtmiddileweare
 router.delete('/delete-project/:pId',jwtMiddileware,projectController.deleteProjectController)
+
 module.exports=router
-   

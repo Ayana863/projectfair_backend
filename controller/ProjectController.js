@@ -99,13 +99,33 @@ exports.updateProjectDetails=async(req,res)=>{
 
 }
 
-exports.deleteProjectController=async(req,res)=>{
-    const{pId}=req.params
-    try{
-           const deleteProject=await projects.findByIdAndDelete({_id:pId})
-           res.status(200).json(deleteProject)
-    }catch(err){
-     console.log(err);
+// exports.deleteProjectController=async(req,res)=>{
+//     const{pId}=req.params
+//     try{
+//            const deleteProject=await projects.findByIdAndDelete({_id:pId})
+//            res.status(200).json(deleteProject)
+//     }catch(err){
+//      console.log(err);
      
+//     }
+// }
+
+
+exports.deleteProjectController = async (req, res) => {
+  const { pId } = req.params;
+  const userId = req.userId; // from JWT middleware
+
+  try {
+    // Delete only if project belongs to logged-in user
+    const deletedProject = await projects.findOneAndDelete({ _id: pId, userId });
+
+    if (!deletedProject) {
+      return res.status(404).json("Project not found or not authorized to delete");
     }
-}
+
+    res.status(200).json("Project deleted successfully");
+  } catch (err) {
+    console.log(err);
+    res.status(500).json("Server error");
+  }
+};
